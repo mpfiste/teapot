@@ -15,21 +15,12 @@
 
 #include "Vec3.h"
 
-void doViewVolume(const Vec3* const pos, const Vec3* const dir, int width, int height) {
+void doViewVolume(const Vec3* const pos, const Vec3* const dir, float aspect) {
    const double pi = 3.14149265;
    double frustumWidth, frustumHeight;
 
    frustumHeight = tan(30.46 / 360 * pi) * 0.1;
-   frustumWidth = frustumHeight * width / height; 
-/*
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   gluPerspective(30.46, 1.0 * width/height, 0.1, 50.0);
-*/
-
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   glFrustum(-frustumWidth, frustumWidth, -frustumHeight, frustumHeight, 0.1, 50.0);
+   frustumWidth = frustumHeight * aspect; 
 
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();

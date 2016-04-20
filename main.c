@@ -18,6 +18,9 @@
 #include "Scenery.h"
 #include "Shadow.h"
 
+const float EYEDX = 0.005;
+const float EYEDY = 0.0005;
+
 const int WINDOW_WIDTH = 1280, WINDOW_HEIGHT = 720;
 const int SHADOW_WIDTH = 4096, SHADOW_HEIGHT = 4096;
 
@@ -26,6 +29,23 @@ const Vec3 eyeDir = { 1.0, 0.95, -1.1 };
 
 const Vec3 sunPos = { -2.1, 3.0, -1.0 };
 const Vec3 sunDir = { 2.1, -3.0, 1.0 };
+
+void vv(float xt, float yt, float aspect) {
+   const double pi = 3.14149265;
+   double frustumWidth, frustumHeight;
+
+   frustumHeight = tan(30.46 / 360 * pi) * 0.1;
+   frustumWidth = frustumHeight * aspect; 
+   
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glFrustum(-frustumWidth + xt*(1.0/5.0),
+              frustumWidth + xt*(1.0/5.0),
+             -frustumHeight + yt*(1.0/5.0),
+              frustumHeight + yt*(1.0/5.0),
+              0.1, 50.0);
+   glTranslatef(xt, yt, 0.0);
+}
 
 void doLights() {
    float sun_position[] = { 2.25, 2.25, 2.25, 0.0 };
@@ -61,12 +81,12 @@ void initOpenGL(int argc, char** argv) {
    glEnable(GL_CULL_FACE);
 }
 
-void displayLoop() {
+void drawStuff(float xt, float yt) {
    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 1);
    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 
    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-   doViewVolume(&sunPos, &sunDir, SHADOW_WIDTH, SHADOW_HEIGHT);
+   doViewVolume(&sunPos, &sunDir, 1.0*SHADOW_WIDTH/SHADOW_HEIGHT);
    glCullFace(GL_FRONT);
 
    doLights();
@@ -78,13 +98,33 @@ void displayLoop() {
 
    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-   doViewVolume(&eyePos, &eyeDir, WINDOW_WIDTH, WINDOW_HEIGHT);
+   doViewVolume(&eyePos, &eyeDir, 1.0*WINDOW_WIDTH/WINDOW_HEIGHT);
+   vv(xt, yt, 1.0*WINDOW_WIDTH/WINDOW_HEIGHT);
    glCullFace(GL_BACK);
 
    doLights();
    renderAllScenery();
 
    glutSwapBuffers();
+}
+
+void displayLoop() {
+   float xt, yt;
+   glClear(GL_ACCUM_BUFFER_BIT);
+
+   for(xt = -EYEDX; xt < EYEDX; xt += EYEDX/10.0) {
+      for(yt = -EYEDY; yt < EYEDY; yt += EYEDY/10.0) {
+         drawStuff(xt, yt);
+         glFlush();
+         glAccum(GL_ACCUM, 0.01);
+         glFlush();
+      }
+   }
+
+   glAccum(GL_RETURN, 1.0);
+   glFlush();
+
+   printf("Done!\n");
 }
 
 void keyboardLoop(unsigned char key, int x, int y) {

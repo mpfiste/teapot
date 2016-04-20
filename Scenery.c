@@ -89,8 +89,6 @@ void renderAllScenery() {
       }
       glEnd(); 
    }
-
-   glFlush(); 
 }
 
 void freeAllScenery() {
