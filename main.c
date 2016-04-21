@@ -63,7 +63,7 @@ void doLights() {
 
 void initOpenGL(int argc, char** argv) {
    glutInit(&argc, argv);
-   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_ACCUM);
+   glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_ACCUM);
    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
    glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH) - WINDOW_WIDTH) / 2,
                           (glutGet(GLUT_SCREEN_HEIGHT) - WINDOW_HEIGHT) / 2);
@@ -82,6 +82,8 @@ void initOpenGL(int argc, char** argv) {
 }
 
 void drawStuff(float xt, float yt) {
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 1);
    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 
@@ -99,18 +101,27 @@ void drawStuff(float xt, float yt) {
    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
    doViewVolume(&eyePos, &eyeDir, 1.0*WINDOW_WIDTH/WINDOW_HEIGHT);
-//   vv(xt, yt, 1.0*WINDOW_WIDTH/WINDOW_HEIGHT);
+   vv(xt, yt, 1.0*WINDOW_WIDTH/WINDOW_HEIGHT);
    glCullFace(GL_BACK);
 
    doLights();
    renderAllScenery();
 
-   glutSwapBuffers();
+//   glCullFace(GL_FRONT);
+//   glutSwapBuffers();
+
+   glFlush();
 }
 
 void displayLoop() {
    glClear(GL_ACCUM_BUFFER_BIT);
-   drawStuff(0.0f, 0.0f);
+
+   float xt;
+   for(xt = (float)-EYEDX; xt < EYEDX; xt += EYEDX / 10.0) {
+      drawStuff(xt, 0.0f);
+      glAccum(GL_ACCUM, 0.05);
+   }
+   glAccum(GL_RETURN, 1.0);
    glFlush();
 }
 
