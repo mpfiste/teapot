@@ -18,7 +18,7 @@
 #include "Scenery.h"
 #include "Shadow.h"
 
-const float EYEDX = 0.005;
+const float EYEDX = 0.0005;
 const float EYEDY = 0.0005;
 
 const int WINDOW_WIDTH = 1280, WINDOW_HEIGHT = 720;
@@ -28,7 +28,7 @@ const Vec3 eyePos = { 9.3, 0.95, -1.1 };
 const Vec3 eyeDir = { 1.0, 0.95, -1.1 };
 
 const Vec3 sunPos = { -2.1, 3.0, -1.0 };
-const Vec3 sunDir = { 2.1, -3.0, 1.0 };
+const Vec3 sunDir = { 3.1, -4.0, 3.0 };
 
 void vv(float xt, float yt, float aspect) {
    const double pi = 3.14149265;
@@ -44,6 +44,8 @@ void vv(float xt, float yt, float aspect) {
              -frustumHeight + yt*(1.0/5.0),
               frustumHeight + yt*(1.0/5.0),
               0.1, 50.0);
+
+   glMatrixMode(GL_MODELVIEW);
    glTranslatef(xt, yt, 0.0);
 }
 
@@ -89,6 +91,7 @@ void drawStuff(float xt, float yt) {
 
    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
    doViewVolume(&sunPos, &sunDir, 1.0*SHADOW_WIDTH/SHADOW_HEIGHT);
+   vv(xt*400, yt, 1.0*WINDOW_WIDTH/WINDOW_HEIGHT);
    glCullFace(GL_FRONT);
 
    doLights();
@@ -116,8 +119,10 @@ void drawStuff(float xt, float yt) {
 void displayLoop() {
    glClear(GL_ACCUM_BUFFER_BIT);
 
-   float xt;
+   float xt, yt;
    for(xt = (float)-EYEDX; xt < EYEDX; xt += EYEDX / 10.0) {
+      for(yt = (float)-EYEDY; yt < EYEDY; yt += EYEDY / 10.0) {
+      }
       drawStuff(xt, 0.0f);
       glAccum(GL_ACCUM, 0.05);
    }
