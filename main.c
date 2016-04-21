@@ -99,7 +99,7 @@ void drawStuff(float xt, float yt) {
    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
    doViewVolume(&eyePos, &eyeDir, 1.0*WINDOW_WIDTH/WINDOW_HEIGHT);
-   vv(xt, yt, 1.0*WINDOW_WIDTH/WINDOW_HEIGHT);
+//   vv(xt, yt, 1.0*WINDOW_WIDTH/WINDOW_HEIGHT);
    glCullFace(GL_BACK);
 
    doLights();
@@ -109,22 +109,9 @@ void drawStuff(float xt, float yt) {
 }
 
 void displayLoop() {
-   float xt, yt;
    glClear(GL_ACCUM_BUFFER_BIT);
-
-   for(xt = -EYEDX; xt < EYEDX; xt += EYEDX/10.0) {
-      for(yt = -EYEDY; yt < EYEDY; yt += EYEDY/10.0) {
-         drawStuff(xt, yt);
-         glFlush();
-         glAccum(GL_ACCUM, 0.01);
-         glFlush();
-      }
-   }
-
-   glAccum(GL_RETURN, 1.0);
+   drawStuff(0.0f, 0.0f);
    glFlush();
-
-   printf("Done!\n");
 }
 
 void keyboardLoop(unsigned char key, int x, int y) {

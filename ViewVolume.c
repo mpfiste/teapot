@@ -22,6 +22,14 @@ void doViewVolume(const Vec3* const pos, const Vec3* const dir, float aspect) {
    frustumHeight = tan(30.46 / 360 * pi) * 0.1;
    frustumWidth = frustumHeight * aspect; 
 
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glFrustum(-frustumWidth,
+              frustumWidth,
+             -frustumHeight,
+              frustumHeight,
+              0.1, 50.0);
+
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
