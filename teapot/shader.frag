@@ -34,7 +34,7 @@ void light_geometry(int light_index, float influence, vec3 light_color) {
 
 
 void main() {
-  //light_geometry(0, 1.0, vec3(1.0, 1.0, 1.0));
-  light_geometry(1, 0.4, vec3(0.5, 0.38, 0.35));
-  light_geometry(2, 1.3, vec3(0.807, 0.678, 0.620));
+  //light_geometry(0, 1.0, vec3(0.61, 0.63, 0.83));
+  light_geometry(1, 1.2, vec3(0.5, 0.38, 0.35));
+  light_geometry(2, 1.8, vec3(0.807, 0.678, 0.620));
 }

@@ -35,9 +35,8 @@ void light_geometry(int light_index, float influence, vec3 light_color) {
 
 
 void main() {
-  //light_geometry(0, 1.0, vec3(1.0, 1.0, 1.0));
   light_geometry(1, 0.4, vec3(1, 1, 1));
-  light_geometry(2, 1.3, vec3(0.64, 0.50, 0.40));
+  light_geometry(2, 3.0, vec3(0.36, 0.34, 0.342));
 
   vec4 shadowCoordDivW = myShadowCoord / myShadowCoord.w;
   shadowCoordDivW.z += 0.0005;
